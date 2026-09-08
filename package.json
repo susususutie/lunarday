@@ -21,6 +21,20 @@
   ],
   "author": "",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/susususutie/lcb.git"
+  },
+  "bugs": {
+    "url": "https://github.com/susususutie/lcb/issues"
+  },
+  "homepage": "https://github.com/susususutie/lcb#readme",
+  "engines": {
+    "node": ">=14"
+  },
+  "files": [
+    "bin"
+  ],
   "dependencies": {
     "commander": "^12.0.0",
     "solarlunar": "^3.1.0"
