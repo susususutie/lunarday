@@ -560,9 +560,35 @@ END:VCALENDAR`;
   }
 
   // 页面加载完成后初始化
+  function waitForSolarLunar(callback, maxAttempts) {
+    maxAttempts = maxAttempts || 50;
+    var attempts = 0;
+    
+    function check() {
+      attempts++;
+      var solarLunar = window.solarLunar;
+      var convertFn = solarLunar && (solarLunar.lunar2solar || 
+                      (solarLunar.default && solarLunar.default.lunar2solar));
+      
+      if (convertFn) {
+        callback();
+      } else if (attempts < maxAttempts) {
+        setTimeout(check, 100);
+      } else {
+        console.error('solarLunar library failed to load after ' + maxAttempts + ' attempts');
+        // 仍然执行初始化，但会显示错误
+        callback();
+      }
+    }
+    
+    check();
+  }
+
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', init);
+    document.addEventListener('DOMContentLoaded', function() {
+      waitForSolarLunar(init);
+    });
   } else {
-    init();
+    waitForSolarLunar(init);
   }
 })();
