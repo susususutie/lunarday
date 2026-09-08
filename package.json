@@ -4,7 +4,7 @@
   "description": "农历生日日历生成器 - 将农历生日转换为公历日期，生成 Apple Calendar 兼容的 .ics 文件",
   "main": "./bin/cli.js",
   "bin": {
-    "lcb": "./bin/cli.js"
+    "lunarday": "./bin/cli.js"
   },
   "scripts": {
     "test": "node bin/cli.js --help"
@@ -23,12 +23,12 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/susususutie/lcb.git"
+    "url": "https://github.com/susususutie/lunarday.git"
   },
   "bugs": {
-    "url": "https://github.com/susususutie/lcb/issues"
+    "url": "https://github.com/susususutie/lunarday/issues"
   },
-  "homepage": "https://github.com/susususutie/lcb#readme",
+  "homepage": "https://github.com/susususutie/lunarday#readme",
   "engines": {
     "node": ">=14"
   },
