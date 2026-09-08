@@ -128,22 +128,22 @@ END:VCALENDAR`;
 const program = new Command();
 
 program
-  .name('lcb')
+  .name('lunarday')
   .description(`农历生日日历生成器 (Lunar Calendar Birthday)
 
 用法:
-  $ lcb "成员:农历生日" [选项]
+  $ lunarday "成员:农历生日" [选项]
 
 示例:
-  $ lcb "张三:19950103"
-  $ lcb "张三:19950103" "李四:19920709"
-  $ lcb "张三:19950103" -y 2026,2027
-  $ lcb "张三:19950103" -o my-birthday.ics
-  $ lcb "张三:19950103" -n "我的生日" -c "#FF0000"
+  $ lunarday "老妈:19710101"
+  $ lunarday "老妈:19710101" "老爸:19720202"
+  $ lunarday "老妈:19710101" -y 2026,2027
+  $ lunarday "老妈:19710101" -o 老妈生日.ics
+  $ lunarday "老妈:19710101" -n "老妈生日" -c "#FF69B4"
 
 成员格式:
   "姓名:YYYYMMDD"
-  YYYYMMDD 为农历出生日期，例如 19950103 表示农历1995年1月3日
+  YYYYMMDD 为农历出生日期，例如 19710101 表示农历1971年1月1日
 
 选项说明:
   -y, --years    指定生成的年份，多个用逗号分隔（默认：当前年和下一年）
@@ -161,8 +161,8 @@ program
   .action((members, options) => {
     if (!members || members.length === 0) {
       console.error('Error: 请提供成员信息');
-      console.error('用法: lcb "姓名:YYYYMMDD" [选项]');
-      console.error('例如: lcb "张三:19950103" -y 2026');
+      console.error('用法: lunarday "姓名:YYYYMMDD" [选项]');
+      console.error('例如: lunarday "老妈:19710101" -y 2026');
       process.exit(1);
     }
 
