@@ -11,7 +11,7 @@ npx lunarday "老妈:19710101"
 ## 用法
 
 ```bash
-lunarday "姓名:农历生日" [选项]
+npx lunarday "姓名:农历生日" [选项]
 ```
 
 ### 成员格式
@@ -21,10 +21,10 @@ lunarday "姓名:农历生日" [选项]
 ### 示例
 
 ```bash
-lunarday "老妈:19710101"
-lunarday "老妈:19710101" "老爸:19720202"
-lunarday "老妈:19710101" -y 2026,2027
-lunarday "老妈:19710101" -n "老妈生日" -c "#FF69B4"
+npx lunarday "老妈:19710101"
+npx lunarday "老妈:19710101" "老爸:19720202"
+npx lunarday "老妈:19710101" -y 2026,2027
+npx lunarday "老妈:19710101" -n "老妈生日" -c "#FF69B4"
 ```
 
 ## 选项
