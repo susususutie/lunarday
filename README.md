@@ -42,6 +42,15 @@ lunarday "老妈:19710101" -n "老妈生日" -c "#FF69B4"
 2. 打开 Apple Calendar → 文件 → 导入
 3. 选择 .ics 文件，点击"导入"
 
+## 发布
+
+```bash
+npm version patch  # 或 minor/major
+git push --tags
+```
+
+GitHub Actions 会自动发布到 npm。
+
 ## License
 
 MIT
