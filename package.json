@@ -7,7 +7,9 @@
     "lunarday": "./bin/cli.js"
   },
   "scripts": {
-    "test": "node bin/cli.js --help"
+    "test": "node bin/cli.js --help",
+    "dev:web": "node scripts/dev-server.js",
+    "dev": "node scripts/dev-server.js"
   },
   "keywords": [
     "lunar",

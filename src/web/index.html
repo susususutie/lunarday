@@ -7,7 +7,6 @@
   <meta name="theme-color" content="#0088FF">
   <title>农历生日日历生成器</title>
   <link rel="stylesheet" href="style.css">
-  <!-- solarlunar CDN with local fallback -->
   <script src="https://cdn.jsdelivr.net/npm/solarlunar@3.1.0/dist/solarlunar.min.js"></script>
   <script>
     if (typeof window.solarLunar === 'undefined') {
@@ -17,32 +16,25 @@
 </head>
 <body>
   <div class="container">
-    <!-- Header -->
     <header class="header">
       <h1>农历生日日历生成器</h1>
       <p class="subtitle">将家人的农历生日转为公历，一键导入手机日历，再也不怕忘记生日</p>
     </header>
 
-    <!-- WeChat tip (hidden by default) -->
     <div id="wechat-tip" class="wechat-tip" style="display: none;">
       <p>请在浏览器中打开此页面以获得完整功能</p>
-      <button id="copy-link-btn" class="btn btn-secondary">复制链接</button>
+      <button id="copy-link-btn" class="btn btn-secondary btn-small">复制链接</button>
     </div>
 
-    <!-- Main form -->
     <main class="main">
-      <!-- Members section -->
       <section class="section">
         <div class="section-header">
           <h2>家人列表</h2>
           <button id="add-member-btn" class="btn btn-primary btn-small">+ 添加家人</button>
         </div>
-        <div id="members-list" class="members-list">
-          <!-- Members will be added here -->
-        </div>
+        <div id="members-list" class="members-list"></div>
       </section>
 
-      <!-- Settings section -->
       <section class="section">
         <h2>设置</h2>
         <div class="settings-grid">
@@ -61,7 +53,6 @@
         </div>
       </section>
 
-      <!-- Preview section -->
       <section class="section">
         <h2>预览</h2>
         <div id="preview-container" class="preview-container">
@@ -69,18 +60,11 @@
         </div>
       </section>
 
-      <!-- Actions -->
       <div class="actions">
-        <button id="download-btn" class="btn btn-primary btn-large" disabled>
-          下载 .ics 日历文件
-        </button>
-        <button id="webcal-btn" class="btn btn-secondary btn-large" style="display: none;">
-          直接导入日历
-        </button>
+        <button id="download-btn" class="btn btn-primary btn-large" disabled>下载 .ics 日历文件</button>
       </div>
     </main>
 
-    <!-- Import guide modal -->
     <div id="import-modal" class="modal" style="display: none;">
       <div class="modal-content">
         <div class="modal-header">
@@ -115,12 +99,9 @@
       </div>
     </div>
 
-    <!-- Footer -->
     <footer class="footer">
       <p>所有数据仅保存在您的浏览器本地，不会上传至任何服务器</p>
-      <p>
-        <a href="https://github.com/sutie/lunarday" target="_blank" rel="noopener">GitHub</a>
-      </p>
+      <p><a href="https://github.com/susususutie/lunarday" target="_blank" rel="noopener">GitHub</a></p>
     </footer>
   </div>
 
