@@ -1,6 +1,6 @@
 {
   "name": "lunarday",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "农历生日日历生成器 - 将农历生日转换为公历日期，生成 Apple Calendar 兼容的 .ics 文件",
   "main": "./bin/cli.js",
   "bin": {
