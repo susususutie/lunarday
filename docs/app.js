@@ -71,10 +71,19 @@
    */
   function lunar2solar(year, lunarMonth, lunarDay) {
     const solarLunar = window.solarLunar;
-    if (!solarLunar || !solarLunar.lunar2solar) {
+    if (!solarLunar) {
       throw new Error('农历转换库加载失败');
     }
-    return solarLunar.lunar2solar(year, lunarMonth, lunarDay);
+    
+    // 支持两种导入方式：直接函数或 default 导出
+    const convertFn = solarLunar.lunar2solar || 
+                      (solarLunar.default && solarLunar.default.lunar2solar);
+    
+    if (!convertFn) {
+      throw new Error('农历转换库加载失败');
+    }
+    
+    return convertFn(year, lunarMonth, lunarDay);
   }
 
   /**
