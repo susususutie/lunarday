@@ -1,0 +1,28 @@
+{
+  "name": "lcb",
+  "version": "1.0.0",
+  "description": "农历生日日历生成器 - 将农历生日转换为公历日期，生成 Apple Calendar 兼容的 .ics 文件",
+  "main": "./bin/cli.js",
+  "bin": {
+    "lcb": "./bin/cli.js"
+  },
+  "scripts": {
+    "test": "node bin/cli.js --help"
+  },
+  "keywords": [
+    "lunar",
+    "calendar",
+    "birthday",
+    "apple-calendar",
+    "ics",
+    "chinese-calendar",
+    "农历",
+    "生日"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "commander": "^12.0.0",
+    "solarlunar": "^3.1.0"
+  }
+}
