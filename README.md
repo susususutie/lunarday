@@ -12,6 +12,8 @@
 npx lunarday "老妈:19710101"
 ```
 
+> 也可以使用 `vp dlx lunarday`、`yarn dlx lunarday` 或 `pnpm dlx lunarday`
+
 ## 用法
 
 ### CLI 版本
@@ -19,6 +21,8 @@ npx lunarday "老妈:19710101"
 ```bash
 npx lunarday "姓名:农历生日" [选项]
 ```
+
+> 也可以使用 `vp dlx lunarday`、`yarn dlx lunarday` 或 `pnpm dlx lunarday`
 
 #### 成员格式
 
@@ -48,16 +52,25 @@ npx lunarday "老妈:19710101" -n "老妈生日" -c "#FF69B4"
 
 ```bash
 # 安装依赖
-npm install
+vp install
 
 # 启动开发服务器
-npm run dev
-
-# 或
-npm run dev:web
+vp dev
 ```
 
 访问 http://localhost:3000
+
+#### 开发命令
+
+```bash
+vp dev      # 启动开发服务器
+vp build    # 构建生产版本
+vp pack     # 打包 CLI 为独立文件
+vp preview  # 预览生产版本
+vp check    # 格式化、lint 和类型检查
+vp run test # 运行测试脚本
+vp exec <cmd> # 执行本地项目命令
+```
 
 #### 功能特性
 
@@ -80,31 +93,35 @@ npm run dev:web
 lunarday/
 ├── bin/                    # CLI 版本
 │   └── cli.js
-├── src/
-│   └── web/               # Web 版本
-│       ├── index.html
-│       ├── style.css
-│       ├── app.js
-│       └── vendor/
-├── scripts/
-│   └── dev-server.js      # 本地开发服务器
+├── src/                    # Web 版本
+│   ├── index.html
+│   ├── style.css
+│   ├── app.js
+│   └── core.js            # 核心逻辑（农历转换）
 ├── .github/
 │   └── workflows/
 │       ├── publish.yml    # npm 发布
 │       └── deploy-web.yml # Web 部署
+├── vite.config.ts         # Vite+ 配置
+├── .node-version          # Node.js 版本
 └── package.json
 ```
 
 ## 发布
 
 ```bash
-npm version patch  # 或 minor/major
+# 更新版本号
+pnpm version patch  # 或 minor/major
+
+# 推送标签触发发布
 git push --tags
 ```
 
 GitHub Actions 会自动发布到 npm。
 
 Web 版本会在推送到 main 分支时自动部署到 GitHub Pages。
+
+**注意**：`vp` 没有内置的版本管理命令，所以版本更新仍使用 `pnpm version`。
 
 ## License
 

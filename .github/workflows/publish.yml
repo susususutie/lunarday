@@ -20,8 +20,8 @@ jobs:
         with:
           node-version-file: '.node-version'
 
-      - run: pnpm install --frozen-lockfile
+      - run: vp install --frozen-lockfile
 
-      - run: pnpm test
+      - run: vp run test
 
-      - run: pnpm publish --access public
+      - run: vp pm publish --access public
