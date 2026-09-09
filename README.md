@@ -111,7 +111,7 @@ lunarday/
 
 ```bash
 # 更新版本号
-pnpm version patch  # 或 minor/major
+vp pm version patch  # 或 minor/major
 
 # 推送标签触发发布
 git push --tags
@@ -120,8 +120,6 @@ git push --tags
 GitHub Actions 会自动发布到 npm。
 
 Web 版本会在推送到 main 分支时自动部署到 GitHub Pages。
-
-**注意**：`vp` 没有内置的版本管理命令，所以版本更新仍使用 `pnpm version`。
 
 ## License
 
