@@ -12,31 +12,17 @@
   var STORAGE_KEY = 'lunarday_data';
   var STORAGE_VERSION = 2;
 
-  // ==================== 工具函数 ====================
-
-  function getLunarMonthName(month) {
-    return LUNAR_MONTHS[month - 1] || '';
-  }
-
-  function getLunarDayName(day) {
-    return LUNAR_DAYS[day] || '';
-  }
-
+  function getLunarMonthName(month) { return LUNAR_MONTHS[month - 1] || ''; }
+  function getLunarDayName(day) { return LUNAR_DAYS[day] || ''; }
   function escapeICS(str) {
     return str.replace(/\\/g, '\\\\').replace(/;/g, '\\;').replace(/,/g, '\\,').replace(/\n/g, '\\n');
   }
-
-  function isWeChat() {
-    return /MicroMessenger/i.test(navigator.userAgent);
-  }
-
+  function isWeChat() { return /MicroMessenger/i.test(navigator.userAgent); }
   function escapeHtml(str) {
     var div = document.createElement('div');
     div.textContent = str;
     return div.innerHTML;
   }
-
-  // ==================== 核心逻辑 ====================
 
   function getSolarLunar() {
     var sl = window.solarLunar;
@@ -51,19 +37,15 @@
   }
 
   function getLunarDisplayStr(member) {
-    var prefix = member.isLeapMonth ? '闰' : '';
-    return prefix + getLunarMonthName(member.lunarMonth) + getLunarDayName(member.lunarDay);
+    return (member.isLeapMonth ? '闰' : '') + getLunarMonthName(member.lunarMonth) + getLunarDayName(member.lunarDay);
   }
 
   function generateMemberEvents(member, years, useFallback) {
     var events = [];
-    
     for (var i = 0; i < years.length; i++) {
       var year = years[i];
       try {
-        var solar;
-        var usedFallback = false;
-        
+        var solar, usedFallback = false;
         if (member.isLeapMonth) {
           try {
             solar = lunar2solar(year, member.lunarMonth, member.lunarDay, true);
@@ -71,86 +53,40 @@
             if (useFallback) {
               solar = lunar2solar(year, member.lunarMonth, member.lunarDay, false);
               usedFallback = true;
-            } else {
-              throw e;
-            }
+            } else { throw e; }
           }
         } else {
           solar = lunar2solar(year, member.lunarMonth, member.lunarDay, false);
         }
-        
-        events.push({
-          year: year,
-          month: solar.cMonth,
-          day: solar.cDay,
-          age: year - member.birthYear,
-          usedFallback: usedFallback
-        });
+        events.push({ year: year, month: solar.cMonth, day: solar.cDay, age: year - member.birthYear, usedFallback: usedFallback });
       } catch (e) {
-        events.push({
-          year: year,
-          error: member.isLeapMonth && !useFallback 
-            ? '该年无此日期（闰月约每2-3年一次）' 
-            : (e.message || '转换失败')
-        });
+        events.push({ year: year, error: member.isLeapMonth && !useFallback ? '该年无此日期（闰月约每2-3年一次）' : (e.message || '转换失败') });
       }
     }
-    
     return events;
   }
 
   function generateICS(birthdays, config) {
     var dtstamp = new Date().toISOString().replace(/[-:T]/g, '').split('.')[0] + 'Z';
     var events = [];
-
     for (var i = 0; i < birthdays.length; i++) {
       var member = birthdays[i];
       for (var j = 0; j < member.events.length; j++) {
         var event = member.events[j];
         if (event.error) continue;
-
         var pad = function(n) { return String(n).padStart(2, '0'); };
         var prefix = member.isLeapMonth ? '闰' : '';
         var uid = member.name + '-lunar-' + event.year + '-' + Date.now() + '@lunarday';
-
-        events.push('BEGIN:VEVENT\n' +
-          'DESCRIPTION:农历' + prefix + getLunarMonthName(member.lunarMonth) + getLunarDayName(member.lunarDay) + '\n' +
-          'DTEND;VALUE=DATE:' + (event.year + 1) + pad(event.month) + pad(event.day) + '\n' +
-          'DTSTAMP:' + dtstamp + '\n' +
-          'DTSTART;VALUE=DATE:' + event.year + pad(event.month) + pad(event.day) + '\n' +
-          'LAST-MODIFIED:' + dtstamp + '\n' +
-          'SEQUENCE:0\n' +
-          'SUMMARY;CHARSET=UTF-8;LANGUAGE=zh_CN:' + escapeICS(member.name) + event.age + '岁生日\n' +
-          'TRANSP:TRANSPARENT\n' +
-          'UID:' + uid + '\n' +
-          'END:VEVENT');
+        events.push('BEGIN:VEVENT\nDESCRIPTION:农历' + prefix + getLunarMonthName(member.lunarMonth) + getLunarDayName(member.lunarDay) + '\nDTEND;VALUE=DATE:' + (event.year + 1) + pad(event.month) + pad(event.day) + '\nDTSTAMP:' + dtstamp + '\nDTSTART;VALUE=DATE:' + event.year + pad(event.month) + pad(event.day) + '\nLAST-MODIFIED:' + dtstamp + '\nSEQUENCE:0\nSUMMARY;CHARSET=UTF-8;LANGUAGE=zh_CN:' + escapeICS(member.name) + event.age + '岁生日\nTRANSP:TRANSPARENT\nUID:' + uid + '\nEND:VEVENT');
       }
     }
-
-    var ics = 'BEGIN:VCALENDAR\n' +
-      'CALSCALE:GREGORIAN\n' +
-      'PRODID:-//' + escapeICS(config.calendarName) + '//Lunar Calendar Birthday//CN\n' +
-      'VERSION:2.0\n' +
-      'X-APPLE-CALENDAR-COLOR:' + config.calendarColor + '\n' +
-      'X-WR-CALNAME:' + escapeICS(config.calendarName) + '\n' +
-      events.join('\n') + '\n' +
-      'END:VCALENDAR';
-
-    return ics.replace(/\n/g, '\r\n');
+    return ('BEGIN:VCALENDAR\nCALSCALE:GREGORIAN\nPRODID:-//' + escapeICS(config.calendarName) + '//Lunar Calendar Birthday//CN\nVERSION:2.0\nX-APPLE-CALENDAR-COLOR:' + config.calendarColor + '\nX-WR-CALNAME:' + escapeICS(config.calendarName) + '\n' + events.join('\n') + '\nEND:VCALENDAR').replace(/\n/g, '\r\n');
   }
-
-  // ==================== 数据持久化 ====================
 
   function saveData(members, settings) {
     try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify({
-        version: STORAGE_VERSION,
-        members: members,
-        settings: settings
-      }));
-    } catch (e) {
-      console.warn('保存数据失败:', e);
-    }
+      localStorage.setItem(STORAGE_KEY, JSON.stringify({ version: STORAGE_VERSION, members: members, settings: settings }));
+    } catch (e) {}
   }
 
   function loadData() {
@@ -158,61 +94,41 @@
       var raw = localStorage.getItem(STORAGE_KEY);
       if (!raw) return null;
       var data = JSON.parse(raw);
-      if (data.version !== STORAGE_VERSION) return null;
-      return data;
-    } catch (e) {
-      return null;
-    }
+      return data.version === STORAGE_VERSION ? data : null;
+    } catch (e) { return null; }
   }
 
-  // ==================== 状态 ====================
-
   var members = [];
-  var settings = {
-    calendarName: '家庭农历生日',
-    calendarColor: '#0088FF',
-    useFallback: true
-  };
-
-  // ==================== 初始化 ====================
+  var settings = { calendarName: '家庭农历生日', calendarColor: '#2563EB', useFallback: true };
 
   function init() {
-    // 微信检测
     if (isWeChat()) {
       document.getElementById('wechat-tip').style.display = 'flex';
       document.getElementById('copy-link-btn').addEventListener('click', function() {
         var self = this;
-        navigator.clipboard.writeText(window.location.href).then(function() {
-          self.textContent = '已复制';
-          setTimeout(function() { self.textContent = '复制链接'; }, 2000);
-        });
+        navigator.clipboard.writeText(window.location.href).then(function() { self.textContent = '已复制'; setTimeout(function() { self.textContent = '复制链接'; }, 2000); });
       });
     }
 
-    // 填充年份下拉
     var currentYear = new Date().getFullYear();
     var yearStart = document.getElementById('year-start');
     var yearEnd = document.getElementById('year-end');
+    var inputYear = document.getElementById('input-year');
     for (var y = currentYear - 5; y <= currentYear + 5; y++) {
       yearStart.add(new Option(y, y));
       yearEnd.add(new Option(y, y));
+      inputYear.add(new Option(y, y));
     }
     yearStart.value = currentYear;
     yearEnd.value = currentYear + 1;
 
-    // 填充农历月日下拉
     var monthSelect = document.getElementById('input-month');
     var daySelect = document.getElementById('input-day');
     monthSelect.add(new Option('月', ''));
-    LUNAR_MONTHS.forEach(function(name, i) {
-      monthSelect.add(new Option(name, i + 1));
-    });
+    LUNAR_MONTHS.forEach(function(name, i) { monthSelect.add(new Option(name, i + 1)); });
     daySelect.add(new Option('日', ''));
-    for (var d = 1; d <= 30; d++) {
-      daySelect.add(new Option(getLunarDayName(d), d));
-    }
+    for (var d = 1; d <= 30; d++) { daySelect.add(new Option(getLunarDayName(d), d)); }
 
-    // 加载保存的数据
     var saved = loadData();
     if (saved) {
       members = saved.members || [];
@@ -224,64 +140,36 @@
     renderMembers();
     updatePreview();
 
-    // 闰月复选框变化
     document.getElementById('input-leap').addEventListener('change', function() {
       var hint = document.getElementById('leap-hint');
       var hintText = document.getElementById('leap-hint-text');
       if (this.checked) {
         var monthVal = document.getElementById('input-month').value;
-        if (monthVal) {
-          var monthName = getLunarMonthName(parseInt(monthVal));
-          hintText.textContent = '闰月生日约每2-3年一次，可在设置中选择无闰月时使用普通' + monthName + '月';
-        } else {
-          hintText.textContent = '请先选择农历月份';
-        }
+        var monthName = monthVal ? getLunarMonthName(parseInt(monthVal)) : '';
+        hintText.textContent = monthName ? '闰月生日约每2-3年一次，可在设置中选择无闰月时使用普通' + monthName + '月' : '请先选择农历月份';
         hint.style.display = 'flex';
       } else {
         hint.style.display = 'none';
       }
     });
 
-    // 月份变化时更新闰月提示
     document.getElementById('input-month').addEventListener('change', function() {
       if (document.getElementById('input-leap').checked && this.value) {
-        var monthName = getLunarMonthName(parseInt(this.value));
-        document.getElementById('leap-hint-text').textContent = 
-          '闰月生日约每2-3年一次，可在设置中选择无闰月时使用普通' + monthName + '月';
+        document.getElementById('leap-hint-text').textContent = '闰月生日约每2-3年一次，可在设置中选择无闰月时使用普通' + getLunarMonthName(parseInt(this.value)) + '月';
       }
     });
 
-    // 添加按钮
     document.getElementById('add-btn').addEventListener('click', addMember);
+    document.getElementById('input-name').addEventListener('keypress', function(e) { if (e.key === 'Enter') addMember(); });
 
-    // 输入框回车
-    document.getElementById('input-name').addEventListener('keypress', function(e) {
-      if (e.key === 'Enter') addMember();
-    });
-
-    // 设置变化
     document.getElementById('year-start').addEventListener('change', updatePreview);
     document.getElementById('year-end').addEventListener('change', updatePreview);
-    document.getElementById('calendar-name').addEventListener('change', function() {
-      settings.calendarName = this.value;
-      saveData(members, settings);
-    });
-    document.getElementById('global-fallback').addEventListener('change', function() {
-      settings.useFallback = this.checked;
-      saveData(members, settings);
-      updatePreview();
-    });
+    document.getElementById('calendar-name').addEventListener('change', function() { settings.calendarName = this.value; saveData(members, settings); });
+    document.getElementById('global-fallback').addEventListener('change', function() { settings.useFallback = this.checked; saveData(members, settings); updatePreview(); });
 
-    // 下载按钮
     document.getElementById('download-btn').addEventListener('click', downloadICS);
-
-    // 模态框
-    document.getElementById('close-modal').addEventListener('click', function() {
-      document.getElementById('import-modal').style.display = 'none';
-    });
-    document.getElementById('import-modal').addEventListener('click', function(e) {
-      if (e.target === this) this.style.display = 'none';
-    });
+    document.getElementById('close-modal').addEventListener('click', function() { document.getElementById('import-modal').style.display = 'none'; });
+    document.getElementById('import-modal').addEventListener('click', function(e) { if (e.target === this) this.style.display = 'none'; });
   }
 
   function addMember() {
@@ -292,19 +180,12 @@
     var isLeap = document.getElementById('input-leap').checked;
 
     if (!name) { alert('请输入姓名'); return; }
-    if (!year) { alert('请输入农历年份'); return; }
+    if (!year) { alert('请选择农历年份'); return; }
     if (!month) { alert('请选择农历月份'); return; }
     if (!day) { alert('请选择农历日期'); return; }
 
-    members.push({
-      name: name,
-      birthYear: year,
-      lunarMonth: month,
-      lunarDay: day,
-      isLeapMonth: isLeap
-    });
+    members.push({ name: name, birthYear: year, lunarMonth: month, lunarDay: day, isLeapMonth: isLeap });
 
-    // 清空输入
     document.getElementById('input-name').value = '';
     document.getElementById('input-year').value = '';
     document.getElementById('input-month').value = '';
@@ -315,7 +196,6 @@
     saveData(members, settings);
     renderMembers();
     updatePreview();
-
     document.getElementById('input-name').focus();
   }
 
@@ -330,38 +210,38 @@
     var container = document.getElementById('members-list');
     var count = document.getElementById('member-count');
     
-    count.textContent = members.length + ' 人';
-    
     if (members.length === 0) {
-      container.innerHTML = '<p class="empty-state">还没有添加家人</p>';
+      container.innerHTML = '';
+      count.innerHTML = '';
       return;
     }
     
     var html = '';
     members.forEach(function(m, i) {
-      var lunarStr = getLunarDisplayStr(m);
       html += '<div class="member-item">' +
-        '<span class="member-info">' + escapeHtml(m.name) + ' · ' + lunarStr + ' · ' + m.birthYear + '年</span>' +
-        '<button class="delete-btn" data-index="' + i + '">&times;</button>' +
+        '<div class="member-avatar">' + m.name.charAt(0) + '</div>' +
+        '<span class="member-info">' + escapeHtml(m.name) + ' · ' + getLunarDisplayStr(m) + ' · ' + m.birthYear + '年</span>' +
+        '<button class="member-delete" data-index="' + i + '">&times;</button>' +
       '</div>';
     });
-    
     container.innerHTML = html;
     
-    container.querySelectorAll('.delete-btn').forEach(function(btn) {
-      btn.addEventListener('click', function() {
-        removeMember(parseInt(this.dataset.index));
-      });
+    container.querySelectorAll('.member-delete').forEach(function(btn) {
+      btn.addEventListener('click', function() { removeMember(parseInt(this.dataset.index)); });
     });
+    
+    count.innerHTML = '<div class="member-count-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg> ' + members.length + ' 人</div>';
   }
 
   function updatePreview() {
     var container = document.getElementById('preview-container');
     var downloadBtn = document.getElementById('download-btn');
+    var countEl = document.getElementById('preview-count');
     
     if (members.length === 0) {
       container.innerHTML = '<p class="empty-state">添加家人后，转换结果将在这里显示</p>';
       downloadBtn.disabled = true;
+      countEl.textContent = '';
       return;
     }
     
@@ -371,31 +251,36 @@
     for (var y = yearStart; y <= yearEnd; y++) years.push(y);
     
     var useFallback = document.getElementById('global-fallback').checked;
+    var totalCount = 0;
     
-    var html = '<table class="preview-table"><thead><tr>';
-    html += '<th>姓名</th><th>农历生日</th><th>公历日期</th><th>年龄</th>';
-    html += '</tr></thead><tbody>';
+    var html = '<table class="preview-table"><thead><tr><th>姓名</th><th>农历生日</th><th>公历日期</th><th>年龄</th><th></th></tr></thead><tbody>';
     
     members.forEach(function(member) {
       var lunarStr = getLunarDisplayStr(member);
       var events = generateMemberEvents(member, years, useFallback);
       
       events.forEach(function(event) {
+        totalCount++;
         if (event.error) {
-          html += '<tr><td>' + escapeHtml(member.name) + '</td><td>' + lunarStr + '</td>';
-          html += '<td><span class="error">' + event.error + '</span></td><td>-</td></tr>';
+          html += '<tr><td><div class="table-member"><div class="table-avatar">' + member.name.charAt(0) + '</div>' + escapeHtml(member.name) + '</div></td><td>' + lunarStr + '</td><td><span class="error-text">' + event.error + '</span></td><td>-</td><td></td></tr>';
         } else {
           var solarStr = event.year + '-' + String(event.month).padStart(2, '0') + '-' + String(event.day).padStart(2, '0');
-          var fallbackMark = event.usedFallback ? ' <span class="fallback">※</span>' : '';
-          html += '<tr><td>' + escapeHtml(member.name) + '</td><td>' + lunarStr + fallbackMark + '</td>';
-          html += '<td>' + solarStr + '</td><td>' + event.age + '岁</td></tr>';
+          var fallbackMark = event.usedFallback ? '<span class="fallback-text">(闰月fallback)</span>' : '';
+          html += '<tr><td><div class="table-member"><div class="table-avatar">' + member.name.charAt(0) + '</div>' + escapeHtml(member.name) + '</div></td><td>' + lunarStr + fallbackMark + '</td><td>' + solarStr + '</td><td>' + event.age + '岁</td><td><button class="btn-import" data-name="' + escapeHtml(member.name) + '" data-date="' + solarStr + '" data-age="' + event.age + '"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg> 导入日历</button></td></tr>';
         }
       });
     });
     
     html += '</tbody></table>';
     container.innerHTML = html;
+    countEl.textContent = '共 ' + totalCount + ' 条';
     downloadBtn.disabled = false;
+    
+    container.querySelectorAll('.btn-import').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        alert('请先下载 .ics 文件，然后在手机上打开即可导入日历');
+      });
+    });
   }
 
   function downloadICS() {
@@ -430,14 +315,9 @@
     var attempts = 0;
     function check() {
       attempts++;
-      if (getSolarLunar()) {
-        callback();
-      } else if (attempts < maxAttempts) {
-        setTimeout(check, 100);
-      } else {
-        console.error('solarLunar library failed to load');
-        callback();
-      }
+      if (getSolarLunar()) { callback(); }
+      else if (attempts < maxAttempts) { setTimeout(check, 100); }
+      else { console.error('solarLunar library failed to load'); callback(); }
     }
     check();
   }

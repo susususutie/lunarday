@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="农历生日日历生成器 - 将家人的农历生日转为公历，一键导入手机日历">
-  <meta name="theme-color" content="#0088FF">
+  <meta name="theme-color" content="#1E3A5F">
   <title>农历生日日历生成器</title>
   <link rel="stylesheet" href="style.css">
   <script src="https://cdn.jsdelivr.net/npm/solarlunar@3.1.0/dist/solarlunar.min.js"></script>
@@ -15,120 +15,247 @@
   </script>
 </head>
 <body>
-  <div class="container">
-    <header class="header">
-      <h1>农历生日日历生成器</h1>
-      <p class="subtitle">将家人的农历生日转为公历，一键导入手机日历</p>
-    </header>
-
-    <div id="wechat-tip" class="wechat-tip" style="display: none;">
-      <p>请在浏览器中打开此页面以获得完整功能</p>
-      <button id="copy-link-btn" class="btn btn-secondary btn-small">复制链接</button>
+  <!-- 头部 -->
+  <header class="header">
+    <div class="header-content">
+      <div class="header-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+          <line x1="16" y1="2" x2="16" y2="6"></line>
+          <line x1="8" y1="2" x2="8" y2="6"></line>
+          <line x1="3" y1="10" x2="21" y2="10"></line>
+          <path d="M8 14h.01M12 14h.01M16 14h.01M8 18h.01M12 18h.01"></path>
+        </svg>
+      </div>
+      <div class="header-text">
+        <h1>农历生日日历生成器</h1>
+        <p>将家人的农历生日转为公历，一键导入手机日历</p>
+      </div>
     </div>
+    <div class="header-slogan">重要的日子<br>不再被遗忘</div>
+    <div class="header-leaves"></div>
+  </header>
 
-    <main class="main">
-      <section class="section">
+  <!-- 添加家人 -->
+  <section class="card">
+    <div class="card-header">
+      <div class="card-icon card-icon-user">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+          <circle cx="12" cy="7" r="4"></circle>
+        </svg>
+      </div>
+      <div class="card-title-group">
         <h2>添加家人</h2>
-        <div class="input-row">
-          <input type="text" id="input-name" class="form-control" placeholder="姓名">
-          <input type="number" id="input-year" class="form-control" placeholder="农历年份" min="1900" max="2100">
-          <select id="input-month" class="form-control"></select>
-          <select id="input-day" class="form-control"></select>
-          <label class="checkbox-label">
-            <input type="checkbox" id="input-leap"> 闰月
-          </label>
-          <button id="add-btn" class="btn btn-primary">添加</button>
-        </div>
-        <div id="leap-hint" class="leap-hint" style="display: none;">
-          <svg class="leap-hint-icon" viewBox="0 0 16 16" fill="currentColor"><path d="M8 16A8 8 0 108 0a8 8 0 000 16zm.93-9.412l-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.399l-.451-.003.082-.381 2.29-.287z"/></svg>
-          <span id="leap-hint-text"></span>
-        </div>
-      </section>
-
-      <section class="section">
-        <div class="section-header">
-          <h2>家人列表</h2>
-          <span id="member-count" class="badge">0 人</span>
-        </div>
-        <div id="members-list" class="members-list">
-          <p class="empty-state">还没有添加家人</p>
-        </div>
-      </section>
-
-      <section class="section">
-        <h2>设置</h2>
-        <div class="settings-grid">
-          <div class="form-group">
-            <label for="year-start">起始年份</label>
-            <select id="year-start" class="form-control"></select>
-          </div>
-          <div class="form-group">
-            <label for="year-end">结束年份</label>
-            <select id="year-end" class="form-control"></select>
-          </div>
-          <div class="form-group">
-            <label for="calendar-name">日历名称</label>
-            <input type="text" id="calendar-name" class="form-control" value="家庭农历生日">
-          </div>
-          <div class="form-group">
-            <label>闰月处理</label>
-            <label class="checkbox-label">
-              <input type="checkbox" id="global-fallback" checked> 无闰月时使用普通月份
-            </label>
-          </div>
-        </div>
-      </section>
-
-      <section class="section">
-        <h2>预览</h2>
-        <div id="preview-container" class="preview-container">
-          <p class="empty-state">添加家人后，转换结果将在这里显示</p>
-        </div>
-      </section>
-
-      <div class="actions">
-        <button id="download-btn" class="btn btn-primary btn-large" disabled>下载 .ics 日历文件</button>
+        <p>填写家人的农历生日，系统将自动转换为公历日期</p>
       </div>
-    </main>
+    </div>
+    
+    <div class="input-row">
+      <div class="input-group">
+        <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+          <circle cx="12" cy="7" r="4"></circle>
+        </svg>
+        <input type="text" id="input-name" placeholder="姓名">
+      </div>
+      <div class="input-group">
+        <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+          <line x1="16" y1="2" x2="16" y2="6"></line>
+          <line x1="8" y1="2" x2="8" y2="6"></line>
+        </svg>
+        <select id="input-year"></select>
+      </div>
+      <div class="input-group">
+        <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+          <line x1="16" y1="2" x2="16" y2="6"></line>
+          <line x1="8" y1="2" x2="8" y2="6"></line>
+          <line x1="3" y1="10" x2="21" y2="10"></line>
+        </svg>
+        <select id="input-month"></select>
+      </div>
+      <div class="input-group">
+        <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"></circle>
+          <polyline points="12 6 12 12 16 14"></polyline>
+        </svg>
+        <select id="input-day"></select>
+      </div>
+      <label class="checkbox-wrapper">
+        <input type="checkbox" id="input-leap">
+        <span class="checkbox-custom"></span>
+        <span>闰月</span>
+      </label>
+      <button id="add-btn" class="btn-add">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="12" y1="5" x2="12" y2="19"></line>
+          <line x1="5" y1="12" x2="19" y2="12"></line>
+        </svg>
+        添加
+      </button>
+    </div>
 
-    <div id="import-modal" class="modal" style="display: none;">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h3>导入日历指引</h3>
-          <button class="modal-close" id="close-modal">&times;</button>
-        </div>
-        <div class="modal-body">
-          <div class="guide-section">
-            <h4>iPhone / iPad</h4>
-            <ol>
-              <li>点击下载的 .ics 文件</li>
-              <li>选择"添加到日历"</li>
-              <li>确认添加</li>
-            </ol>
-          </div>
-          <div class="guide-section">
-            <h4>Mac</h4>
-            <ol>
-              <li>双击下载的 .ics 文件</li>
-              <li>日历应用会自动打开并导入</li>
-            </ol>
-          </div>
-          <div class="guide-section">
-            <h4>Android</h4>
-            <ol>
-              <li>打开下载的 .ics 文件</li>
-              <li>选择用"日历"应用打开</li>
-              <li>确认导入</li>
-            </ol>
-          </div>
-        </div>
+    <div id="leap-hint" class="leap-hint" style="display: none;">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="12" cy="12" r="10"></circle>
+        <line x1="12" y1="16" x2="12" y2="12"></line>
+        <line x1="12" y1="8" x2="12.01" y2="8"></line>
+      </svg>
+      <span id="leap-hint-text"></span>
+    </div>
+
+    <div id="members-list" class="members-list"></div>
+    <div id="member-count" class="member-count"></div>
+  </section>
+
+  <!-- 设置 -->
+  <section class="card">
+    <div class="card-header">
+      <div class="card-icon card-icon-setting">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="3"></circle>
+          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+        </svg>
+      </div>
+      <div class="card-title-group">
+        <h2>设置</h2>
+        <p>选择起始年份和结束年份，填写日历名称</p>
       </div>
     </div>
 
-    <footer class="footer">
-      <p>所有数据仅保存在您的浏览器本地，不会上传至任何服务器</p>
-      <p><a href="https://github.com/susususutie/lunarday" target="_blank" rel="noopener">GitHub</a></p>
-    </footer>
+    <div class="settings-grid">
+      <div class="setting-item">
+        <label>起始年份</label>
+        <div class="select-wrapper">
+          <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+            <line x1="16" y1="2" x2="16" y2="6"></line>
+            <line x1="8" y1="2" x2="8" y2="6"></line>
+          </svg>
+          <select id="year-start"></select>
+        </div>
+      </div>
+      <div class="setting-item">
+        <label>结束年份</label>
+        <div class="select-wrapper">
+          <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+            <line x1="16" y1="2" x2="16" y2="6"></line>
+            <line x1="8" y1="2" x2="8" y2="6"></line>
+          </svg>
+          <select id="year-end"></select>
+        </div>
+      </div>
+      <div class="setting-item">
+        <label>日历名称</label>
+        <div class="input-wrapper">
+          <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+            <polyline points="14 2 14 8 20 8"></polyline>
+          </svg>
+          <input type="text" id="calendar-name" value="家庭农历生日">
+        </div>
+      </div>
+      <div class="setting-item">
+        <label>闰月处理 <span class="help-icon" title="闰月生日约每2-3年一次">?</span></label>
+        <label class="checkbox-wrapper">
+          <input type="checkbox" id="global-fallback" checked>
+          <span class="checkbox-custom"></span>
+          <span>无闰月时使用普通月份</span>
+        </label>
+      </div>
+    </div>
+  </section>
+
+  <!-- 预览 -->
+  <section class="card">
+    <div class="card-header">
+      <div class="card-icon card-icon-preview">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+          <line x1="16" y1="2" x2="16" y2="6"></line>
+          <line x1="8" y1="2" x2="8" y2="6"></line>
+          <line x1="3" y1="10" x2="21" y2="10"></line>
+        </svg>
+      </div>
+      <div class="card-title-group">
+        <h2>预览</h2>
+        <p>以下是根据您设置的条件生成的公历生日</p>
+      </div>
+      <div id="preview-count" class="preview-count"></div>
+    </div>
+
+    <div id="preview-container" class="preview-container">
+      <p class="empty-state">添加家人后，转换结果将在这里显示</p>
+    </div>
+  </section>
+
+  <!-- 下载按钮 -->
+  <div class="download-section">
+    <button id="download-btn" class="btn-download" disabled>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+        <line x1="16" y1="2" x2="16" y2="6"></line>
+        <line x1="8" y1="2" x2="8" y2="6"></line>
+        <line x1="3" y1="10" x2="21" y2="10"></line>
+      </svg>
+      下载 .ics 日历文件
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <line x1="5" y1="12" x2="19" y2="12"></line>
+        <polyline points="12 5 19 12 12 19"></polyline>
+      </svg>
+    </button>
+    <p class="download-tip">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14">
+        <circle cx="12" cy="12" r="10"></circle>
+        <line x1="12" y1="16" x2="12" y2="12"></line>
+        <line x1="12" y1="8" x2="12.01" y2="8"></line>
+      </svg>
+      将生成的日历文件导入到手机日历，即可在日历中查看家人的生日
+    </p>
+  </div>
+
+  <!-- 微信提示 -->
+  <div id="wechat-tip" class="wechat-tip" style="display: none;">
+    <p>请在浏览器中打开此页面以获得完整功能</p>
+    <button id="copy-link-btn" class="btn-copy">复制链接</button>
+  </div>
+
+  <!-- 导入指引模态框 -->
+  <div id="import-modal" class="modal" style="display: none;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>导入日历指引</h3>
+        <button class="modal-close" id="close-modal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="guide-item">
+          <h4>iPhone / iPad</h4>
+          <ol>
+            <li>点击下载的 .ics 文件</li>
+            <li>选择"添加到日历"</li>
+            <li>确认添加</li>
+          </ol>
+        </div>
+        <div class="guide-item">
+          <h4>Mac</h4>
+          <ol>
+            <li>双击下载的 .ics 文件</li>
+            <li>日历应用会自动打开并导入</li>
+          </ol>
+        </div>
+        <div class="guide-item">
+          <h4>Android</h4>
+          <ol>
+            <li>打开下载的 .ics 文件</li>
+            <li>选择用"日历"应用打开</li>
+            <li>确认导入</li>
+          </ol>
+        </div>
+      </div>
+    </div>
   </div>
 
   <script src="app.js"></script>
