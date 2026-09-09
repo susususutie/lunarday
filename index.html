@@ -6,13 +6,7 @@
   <meta name="description" content="农历生日日历生成器 - 将家人的农历生日转为公历，一键导入手机日历">
   <meta name="theme-color" content="#1E3A5F">
   <title>农历生日日历生成器</title>
-  <link rel="stylesheet" href="style.css">
-  <script src="https://cdn.jsdelivr.net/npm/solarlunar@3.1.0/dist/solarlunar.min.js"></script>
-  <script>
-    if (typeof window.solarLunar === 'undefined') {
-      document.write('<script src="vendor/solarlunar.min.js"><\/script>');
-    }
-  </script>
+  <link rel="stylesheet" href="/src/style.css">
 </head>
 <body>
   <!-- 头部 -->
@@ -262,6 +256,6 @@
     </div>
   </div>
 
-  <script src="app.js"></script>
+  <script type="module" src="/src/app.js"></script>
 </body>
 </html>

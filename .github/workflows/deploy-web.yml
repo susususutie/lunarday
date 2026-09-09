@@ -4,7 +4,11 @@ on:
   push:
     branches: [main]
     paths:
-      - 'src/web/**'
+      - 'src/**'
+      - 'index.html'
+      - 'vite.config.ts'
+      - 'package.json'
+      - 'pnpm-lock.yaml'
       - '.github/workflows/deploy-web.yml'
   workflow_dispatch:
 
@@ -27,13 +31,24 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Setup vp
+        uses: voidzero-dev/setup-vp@v2
+        with:
+          node-version-file: '.node-version'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build
+        run: vp build
+
       - name: Setup Pages
         uses: actions/configure-pages@v4
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: 'src/web'
+          path: 'dist'
 
       - name: Deploy to GitHub Pages
         id: deployment

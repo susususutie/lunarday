@@ -1,15 +1,19 @@
 {
   "name": "lunarday",
-  "version": "1.0.6",
+  "version": "1.1.0",
+  "type": "module",
   "description": "农历生日日历生成器 - 将农历生日转换为公历日期，生成 Apple Calendar 兼容的 .ics 文件",
-  "main": "./bin/cli.js",
+  "main": "./dist/cli.mjs",
   "bin": {
-    "lunarday": "./bin/cli.js"
+    "lunarday": "./dist/cli.mjs"
   },
   "scripts": {
-    "test": "node bin/cli.js --help",
-    "dev:web": "node scripts/dev-server.js",
-    "dev": "node scripts/dev-server.js"
+    "dev": "vp dev",
+    "build": "vp build",
+    "pack": "vp pack",
+    "preview": "vp preview",
+    "check": "vp check",
+    "test": "node bin/cli.js --help"
   },
   "keywords": [
     "lunar",
@@ -32,13 +36,23 @@
   },
   "homepage": "https://github.com/susususutie/lunarday#readme",
   "engines": {
-    "node": ">=14"
+    "node": ">=18"
+  },
+  "devEngines": {
+    "packageManager": {
+      "name": "pnpm",
+      "version": "12.3.4",
+      "onFail": "download"
+    }
   },
   "files": [
-    "bin"
+    "dist"
   ],
   "dependencies": {
     "commander": "^12.0.0",
     "solarlunar": "^3.1.0"
+  },
+  "devDependencies": {
+    "vite-plus": "^0.3.0"
   }
 }
