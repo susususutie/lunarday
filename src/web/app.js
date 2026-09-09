@@ -114,7 +114,7 @@
     var yearStart = document.getElementById('year-start');
     var yearEnd = document.getElementById('year-end');
     var inputYear = document.getElementById('input-year');
-    for (var y = 1900; y <= 2100; y++) {
+    for (var y = currentYear - 95; y <= currentYear + 5; y++) {
       yearStart.add(new Option(y, y));
       yearEnd.add(new Option(y, y));
       inputYear.add(new Option(y, y));
