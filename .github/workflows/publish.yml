@@ -25,4 +25,4 @@ jobs:
 
       - run: vp run test
 
-      - run: vp pm publish --access public
+      - run: vp pm publish --access public --no-git-checks
